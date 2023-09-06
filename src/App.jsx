@@ -14,7 +14,7 @@ import Signin from "./pages/Signin"
 
 function App() {
 // eslint-disable-next-line no-unused-vars
-const [isAuth,setIsAuth]=useState(false)
+const [isAuth,setIsAuth]=useState(localStorage.getItem("isAuth"))
   return (
   
     <BrowserRouter>
@@ -23,7 +23,7 @@ const [isAuth,setIsAuth]=useState(false)
       <Route path="/" element={<Layout setIsAuth={setIsAuth} isAuth={isAuth}/>}>
       <Route index element={<Home/>}/>
       <Route path="feature" element={<Feature/>}/>
-      <Route path="blog" element={<Blog/>}/>
+      <Route path="blog" element={<Blog isAuth={isAuth}/>}/>
       <Route path="signin" element={<Signin setIsAuth={setIsAuth} />}/>
       </Route>
       <Route path="*" element={<Error/>}/>

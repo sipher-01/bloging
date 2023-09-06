@@ -1,29 +1,28 @@
 /* eslint-disable react/no-unknown-property */
 import Image1 from "../assets/image1";
 import Image2 from "../assets/Image2";
-import { auth,provider } from "../firebase/firebase-config";
-import {signInWithPopup} from "firebase/auth"
-import {FcGoogle} from "react-icons/fc"
-
-
-
+import { auth, provider } from "../firebase/firebase-config";
+import { signInWithPopup } from "firebase/auth";
+import { FcGoogle } from "react-icons/fc";
+// import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line react/prop-types
-const Signin = ({setIsAuth}) => {
-  console.log(auth)
+const Signin = ({ setIsAuth }) => {
+  console.log(auth);
 
-
-  const signInWithGoogle = ()=>{
-    signInWithPopup(auth,provider).then(()=>{
-      localStorage.setItem("isAuth",true);
-      setIsAuth(true);
-
-    }).catch((err)=>{console.error(err)});
-  }
-
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then(() => {
+        localStorage.setItem("isAuth", true);
+        setIsAuth(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   return (
     <div>
-      <div className="bg-white relative lg:py-20">
+      <div className="bg-white relative lg:py-20 h-[calc(100vh_-_70px)] ">
         <div
           className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
       xl:px-5 lg:flex-row"
@@ -87,9 +86,19 @@ const Signin = ({setIsAuth}) => {
                   focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
                   border-gray-300 rounded-md"
                     />
-                    <div className="pt-3">-------------------------OR---------------------------</div>
-                    <div className="pt-4 ">
-                   <button className="h-6 "   onClick={signInWithGoogle}><FcGoogle /></button> 
+                    <div className=" mx-auto w-fit my-4">
+                      --------------OR---------------
+                    </div>
+                    <div className="w-full mt-4">
+                      <button
+                        className="w-full p-3 border-2 border-blue-600 rounded-lg "
+                        onClick={signInWithGoogle}
+                      >
+                        <div className="flex items-center justify-center space-x-3">
+                          <FcGoogle />
+                          <span>Sign in with Google</span>
+                        </div>
+                      </button>
                     </div>
                   </div>
                   <div className="relative">
@@ -103,7 +112,7 @@ const Signin = ({setIsAuth}) => {
                 </div>
               </div>
               <Image1 />
-              <Image2/>
+              <Image2 />
             </div>
           </div>
         </div>
