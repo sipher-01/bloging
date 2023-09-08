@@ -1,37 +1,44 @@
 /* eslint-disable react/no-unknown-property */
 
 import { useEffect, useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebase-config";
 import { useNavigate } from "react-router-dom";
-
+import { storage } from "../firebase/firebase-config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid";
 // eslint-disable-next-line react/prop-types
-const Blog = ({isAuth}) => {
+const Blog = ({ isAuth }) => {
   // eslint-disable-next-line no-unused-vars
   const [title, setTitle] = useState("");
   // eslint-disable-next-line no-unused-vars
   const [post, setPost] = useState("");
+  const [imageUpload, setImageUpload] = useState(null);
 
   const createReferenceToDatabase = collection(db, "posts");
   const navigate = useNavigate();
 
   // eslint-disable-next-line no-unused-vars
   const createPost = async () => {
-    await addDoc(createReferenceToDatabase, {
+    const postRef = await addDoc(createReferenceToDatabase, {
       title,
       post,
       author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
     });
+    if (imageUpload){
+    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+      await uploadBytes(imageRef, imageUpload);
+      const url = await getDownloadURL(imageRef)
+      await setDoc(doc(db,"posts",postRef.id),{imageUrl:url},{merge:true});
+    }
     navigate("/");
   };
+
   useEffect(() => {
     if (!isAuth) {
       navigate("/signin");
     }
-    // else{
-    //   navigate("/blog")
-    // }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -62,11 +69,19 @@ const Blog = ({isAuth}) => {
             setPost(e.target.value);
           }}
         ></textarea>
-
-        <div className="icons flex text-gray-500 m-2">
           <div className="count ml-auto text-gray-400 text-xs font-semibold">
             0/300
           </div>
+        <label htmlFor="thumbnail" className="mt-3">
+          Thumbnail
+        </label>
+          <input
+            id="thumbnail"
+            className=" bg-gray-100 border border-gray-300 p-2  outine-none grow"
+            type="file"
+            onChange={(e) => setImageUpload(e.target.files[0])}
+          ></input>
+        <div className="icons flex text-gray-500 m-2">
         </div>
         <div className="buttons flex">
           <div className="btn border border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ml-auto">
@@ -82,5 +97,3 @@ const Blog = ({isAuth}) => {
 };
 
 export default Blog;
-
-
